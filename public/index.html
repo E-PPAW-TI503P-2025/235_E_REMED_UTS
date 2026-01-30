@@ -9,93 +9,72 @@
 
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --bg-light: #f3f4f6;
-            --white: #ffffff;
-            --text-dark: #111827;
-            --text-gray: #6b7280;
-            --danger: #ef4444;
-            --success: #10b981;
+            --primary: #2563eb; --bg-light: #f3f4f6; --white: #ffffff;
+            --text-dark: #111827; --text-gray: #6b7280; --sidebar-width: 260px;
         }
-
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-light); margin: 0; display: flex; height: 100vh; color: var(--text-dark); overflow: hidden; }
 
-        /* SIDEBAR */
-        .sidebar { width: 260px; background: var(--white); border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; padding: 20px; }
+        /* LAYOUT & SIDEBAR */
+        .sidebar { width: var(--sidebar-width); background: var(--white); border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; padding: 20px; }
         .logo { font-size: 1.25rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; margin-bottom: 40px; }
         .menu { list-style: none; padding: 0; margin: 0; flex: 1; }
-        .menu li { margin-bottom: 5px; }
         .menu-link { display: flex; align-items: center; gap: 12px; padding: 10px 15px; border-radius: 8px; text-decoration: none; color: var(--text-gray); font-weight: 500; transition: 0.2s; cursor: pointer; }
         .menu-link:hover, .menu-link.active { background-color: #eff6ff; color: var(--primary); }
-        
-        /* ROLE SWITCHER (Simulasi Auth) */
         .profile-box { margin-top: auto; padding: 15px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; }
-        .profile-label { font-size: 0.75rem; color: var(--text-gray); margin-bottom: 5px; display: block; }
-        .role-select { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.875rem; outline: none; }
-
-        /* MAIN CONTENT */
+        .role-select { width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; cursor: pointer; }
         .main { flex: 1; padding: 30px; overflow-y: auto; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .page-title { margin: 0; font-size: 1.5rem; font-weight: 600; }
-        .page-subtitle { color: var(--text-gray); font-size: 0.875rem; margin-top: 5px; }
 
-        /* CARDS & TABLES */
-        .card { background: var(--white); border-radius: 10px; border: 1px solid #e5e7eb; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        /* GRID BUKU & CARD STYLE */
+        .grid-books { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .book-item { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; height: 100%; transition: transform 0.2s; position: relative; }
+        .book-item:hover { transform: translateY(-3px); border-color: var(--primary); }
         
-        /* Form Admin */
-        .admin-form { display: none; grid-template-columns: 2fr 2fr 1fr auto; gap: 15px; align-items: end; }
-        .admin-form.active { display: grid; }
-        .form-group label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 5px; }
-        .form-input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; box-sizing: border-box; }
-        
-        .btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; font-size: 0.875rem; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-danger { background: var(--danger); color: white; padding: 6px 12px; }
-        .btn-borrow { width: 100%; justify-content: center; background: white; border: 1px solid var(--primary); color: var(--primary); margin-top: 15px; }
-        .btn-borrow:hover { background: #eff6ff; }
-        .btn-borrow:disabled { border-color: #e5e7eb; color: #d1d5db; cursor: not-allowed; background: #f9fafb; }
+        /* Styling untuk Admin View yang Baru (Data Row + Edit Icon) */
+        .data-row { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 5px; }
+        .edit-icon-btn { background: none; border: none; color: #9ca3af; cursor: pointer; padding: 4px; font-size: 1.1rem; transition: color 0.2s; border-radius: 4px; }
+        .edit-icon-btn:hover { color: var(--primary); background: #eff6ff; }
 
-        /* GRID BUKU */
-        .grid-books { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
-        .book-item { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; height: 100%; }
         .book-icon { width: 40px; height: 40px; background: #eff6ff; color: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: 15px; }
-        .book-title { font-weight: 600; margin-bottom: 5px; font-size: 1rem; }
-        .book-author { font-size: 0.875rem; color: var(--text-gray); margin-bottom: 15px; }
-        .stock-badge { display: inline-block; padding: 4px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; background: #d1fae5; color: #065f46; margin-top: auto; width: fit-content; }
+        /* Judul & Penulis (User View) */
+        .book-title-user { font-weight: 600; margin-bottom: 5px; font-size: 1rem; }
+        .book-author-user { font-size: 0.875rem; color: var(--text-gray); margin-bottom: 15px; }
+        /* Judul & Penulis (Admin View - lebih rapat utk memberi ruang icon) */
+        .book-data-text { font-weight: 500; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 10px; }
+        .book-data-subtext { font-size: 0.85rem; color: var(--text-gray); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 10px; }
+
+        .stock-badge { display: inline-block; padding: 4px 10px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; background: #d1fae5; color: #065f46; width: fit-content; }
         .stock-badge.empty { background: #fee2e2; color: #991b1b; }
 
-        /* TABLE HISTORY */
+        /* BUTTONS & FORMS */
+        .btn { padding: 10px; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; transition: 0.2s; font-size: 0.875rem; width: 100%; display: flex; justify-content: center; align-items: center; gap: 5px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-borrow { background: white; border: 1px solid var(--primary); color: var(--primary); margin-top: auto; }
+        .btn-borrow:hover { background: #eff6ff; }
+        .btn-borrow:disabled { border-color: #e5e7eb; color: #d1d5db; cursor: not-allowed; background: #f9fafb; }
+        .admin-form { display: none; background: white; padding: 20px; border-radius: 10px; border: 1px solid #e5e7eb; margin-bottom: 30px; gap: 15px; grid-template-columns: 2fr 2fr 1fr auto; align-items: end; }
+        .admin-form.active { display: grid; }
+        .form-input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box; }
+        .table-container { display: none; background: white; border-radius: 10px; border: 1px solid #e5e7eb; overflow: hidden; }
+        .table-container.active { display: block; }
         table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-        th { text-align: left; padding: 12px 15px; background: #f9fafb; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: var(--text-gray); }
-        td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; }
-        .link-map { color: var(--primary); text-decoration: none; font-weight: 500; }
-        .link-map:hover { text-decoration: underline; }
-
-        /* NOTIFICATION */
-        #toast { position: fixed; bottom: 30px; right: 30px; background: #1f2937; color: white; padding: 12px 20px; border-radius: 8px; display: none; animation: slideIn 0.3s; z-index: 100; }
-        @keyframes slideIn { from{transform: translateY(20px); opacity:0;} to{transform: translateY(0); opacity:1;} }
-        
-        .hidden { display: none; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+        th { background: #f9fafb; font-weight: 600; color: var(--text-gray); }
+        #toast { position: fixed; bottom: 30px; right: 30px; background: #1f2937; color: white; padding: 12px 20px; border-radius: 8px; display: none; z-index: 100; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
-
     <aside class="sidebar">
-        <div class="logo"><i class="ri-book-mark-fill"></i> PERPUS APP</div>
-        
+        <div class="logo"><i class="ri-book-mark-fill"></i> SIPER KAMPUS</div>
         <ul class="menu">
-            <li onclick="showSection('catalog')">
-                <a class="menu-link active" id="link-catalog"><i class="ri-dashboard-line"></i> Katalog Buku</a>
-            </li>
-            <li onclick="showSection('history')" id="link-history" style="display: none;">
-                <a class="menu-link"><i class="ri-history-line"></i> Riwayat & Lokasi</a>
-            </li>
+            <li onclick="showSection('catalog')"><a class="menu-link active" id="link-catalog"><i class="ri-dashboard-line"></i> Katalog Buku</a></li>
+            <li onclick="showSection('history')" id="link-history" class="hidden"><a class="menu-link"><i class="ri-map-pin-time-line"></i> Log Peminjaman</a></li>
         </ul>
-
         <div class="profile-box">
-            <span class="profile-label">Simulasi Login Sebagai:</span>
+            <label style="font-size:0.75rem; color:#666; display:block; margin-bottom:5px;">Login Sebagai:</label>
             <select class="role-select" id="roleSelect" onchange="switchRole()">
                 <option value="user">Mahasiswa (User)</option>
                 <option value="admin">Administrator</option>
@@ -105,235 +84,181 @@
 
     <main class="main">
         <header class="header">
-            <div>
-                <h1 class="page-title" id="pageTitle">Katalog Buku</h1>
-                <div class="page-subtitle">Kelola dan pinjam koleksi perpustakaan.</div>
-            </div>
-            <button class="btn btn-primary" onclick="fetchBooks()" style="padding: 8px 15px;">
-                <i class="ri-refresh-line"></i> Refresh Data
-            </button>
+            <div><h1 class="page-title">Katalog Perpustakaan</h1><p style="margin:5px 0 0 0; color:#666; font-size:0.9rem;">Sistem manajemen dan peminjaman buku.</p></div>
+            <button class="btn btn-primary" onclick="fetchBooks()" style="width: auto; padding: 8px 15px;"><i class="ri-refresh-line"></i> Refresh</button>
         </header>
 
-        <div class="card admin-form" id="adminForm">
-            <div class="form-group">
-                <label>Judul Buku</label>
-                <input type="text" id="title" class="form-input" placeholder="Contoh: Pemrograman Web">
-            </div>
-            <div class="form-group">
-                <label>Penulis</label>
-                <input type="text" id="author" class="form-input" placeholder="Nama Penulis">
-            </div>
-            <div class="form-group">
-                <label>Stok Awal</label>
-                <input type="number" id="stock" class="form-input" value="10">
-            </div>
-            <button class="btn btn-primary" onclick="createBook()"><i class="ri-save-line"></i> Simpan</button>
+        <div class="admin-form" id="adminForm">
+            <div><label>Judul Buku</label><input type="text" id="title" class="form-input" placeholder="Judul..."></div>
+            <div><label>Penulis</label><input type="text" id="author" class="form-input" placeholder="Penulis..."></div>
+            <div><label>Stok</label><input type="number" id="stock" class="form-input" value="10"></div>
+            <button class="btn btn-primary" onclick="createBook()">+ Simpan</button>
         </div>
 
-        <div id="section-catalog">
-            <div class="grid-books" id="bookContainer">
-                </div>
-        </div>
+        <div id="section-catalog" class="grid-books"></div>
 
-        <div id="section-history" class="card hidden">
-            <h3 style="margin-top: 0; margin-bottom: 20px;">Log Peminjaman & Lokasi User</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>User ID</th>
-                        <th>Buku ID</th>
-                        <th>Waktu Pinjam</th>
-                        <th>Lokasi (GPS)</th>
-                    </tr>
-                </thead>
-                <tbody id="historyBody">
-                    </tbody>
-            </table>
+        <div id="section-history" class="table-container">
+            <div style="padding:15px; border-bottom:1px solid #eee; font-weight:bold;">Riwayat Peminjaman</div>
+            <table><thead><tr><th>User</th><th>Buku</th><th>Waktu</th><th>Lokasi</th></tr></thead><tbody id="historyBody"></tbody></table>
         </div>
     </main>
-
-    <div id="toast">Notifikasi</div>
+    <div id="toast">Notif</div>
 
     <script>
         const API = 'http://localhost:3000/api';
-        let currentRole = 'user'; // Default role
+        let currentRole = 'user'; 
 
-        // --- NAVIGASI UI ---
+        // --- 1. SWITCH ROLE ---
         function switchRole() {
             currentRole = document.getElementById('roleSelect').value;
             const adminForm = document.getElementById('adminForm');
             const linkHistory = document.getElementById('link-history');
-            
             if (currentRole === 'admin') {
-                adminForm.classList.add('active');
-                linkHistory.style.display = 'block';
-                showToast('Mode: Administrator');
+                adminForm.classList.add('active'); linkHistory.classList.remove('hidden'); showToast('Mode: Administrator');
             } else {
-                adminForm.classList.remove('active');
-                linkHistory.style.display = 'none';
-                showSection('catalog'); // Paksa balik ke katalog
-                showToast('Mode: Mahasiswa');
+                adminForm.classList.remove('active'); linkHistory.classList.add('hidden'); showSection('catalog'); showToast('Mode: Mahasiswa');
             }
-            fetchBooks(); // Refresh tombol edit/hapus vs pinjam
+            fetchBooks();
         }
 
-        function showSection(sectionId) {
-            document.getElementById('section-catalog').classList.add('hidden');
-            document.getElementById('section-history').classList.add('hidden');
-            
-            document.getElementById(`section-${sectionId}`).classList.remove('hidden');
-            
-            // Highlight Menu
-            document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active'));
-            if(sectionId === 'catalog') document.getElementById('link-catalog').classList.add('active');
-            else document.getElementById('link-history').classList.add('active'); // Trik simpel
-
-            if(sectionId === 'history') fetchLogs();
-        }
-
-        // --- READ BOOKS ---
+        // --- 2. RENDER BUKU (PROFESSIONAL SEPARATED EDITS) ---
         async function fetchBooks() {
             try {
                 const res = await fetch(`${API}/books`);
                 const books = await res.json();
-                
-                const container = document.getElementById('bookContainer');
+                const container = document.getElementById('section-catalog');
                 container.innerHTML = '';
 
                 books.forEach(book => {
                     const isHabis = book.stock < 1;
                     const card = document.createElement('div');
                     card.className = 'book-item';
-                    
-                    // Render kartu buku
-                    card.innerHTML = `
-                        <div class="book-icon"><i class="ri-book-2-fill"></i></div>
-                        <div class="book-title">${book.title}</div>
-                        <div class="book-author">${book.author}</div>
-                        <span class="stock-badge ${isHabis ? 'empty' : ''}">
-                            ${isHabis ? 'Stok Habis' : 'Sisa Stok: ' + book.stock}
-                        </span>
-                        
-                        ${currentRole === 'user' ? `
+
+                    if (currentRole === 'user') {
+                        // === TAMPILAN USER (Sederhana) ===
+                        card.innerHTML = `
+                            <div class="book-icon"><i class="ri-book-open-line"></i></div>
+                            <div class="book-title-user">${book.title}</div>
+                            <div class="book-author-user">${book.author}</div>
+                            <span class="stock-badge ${isHabis ? 'empty' : ''}" style="margin-bottom:15px;">
+                                ${isHabis ? 'Habis' : 'Sisa Stok: ' + book.stock}
+                            </span>
                             <button class="btn btn-borrow" onclick="borrowBook(${book.id})" ${isHabis ? 'disabled' : ''}>
-                                ${isHabis ? 'Tidak Tersedia' : '<i class="ri-map-pin-user-line"></i> Pinjam Buku'}
+                                ${isHabis ? 'Stok Habis' : '<i class="ri-map-pin-user-fill"></i> Pinjam (Catat Lokasi)'}
                             </button>
-                        ` : `
-                            <div style="display:flex; gap:10px; margin-top:15px;">
-                                <button class="btn btn-primary" style="flex:1; justify-content:center; background:#f59e0b;" onclick="editBook(${book.id})">Edit</button>
-                                <button class="btn btn-danger" style="flex:1; justify-content:center;" onclick="deleteBook(${book.id})">Hapus</button>
+                        `;
+                    } else {
+                        // === TAMPILAN ADMIN (Profesional dengan Ikon Edit Terpisah) ===
+                        // Kita gunakan tanda kutip satu (') di dalam onlick agar aman jika judul ada spasinya.
+                        card.innerHTML = `
+                            <div class="book-icon"><i class="ri-admin-line"></i></div>
+                            
+                            <div class="data-row" style="margin-bottom:8px;">
+                                <div class="book-data-text" title="${book.title}">${book.title}</div>
+                                <button class="edit-icon-btn" onclick="editTitle(${book.id}, '${book.title}')" title="Edit Judul"><i class="ri-edit-box-line"></i></button>
                             </div>
-                        `}
-                    `;
+
+                            <div class="data-row" style="margin-bottom:15px;">
+                                <div class="book-data-subtext" title="${book.author}"><i class="ri-user-line"></i> ${book.author}</div>
+                                <button class="edit-icon-btn" onclick="editAuthor(${book.id}, '${book.author}')" title="Edit Penulis"><i class="ri-edit-box-line"></i></button>
+                            </div>
+
+                            <div class="data-row" style="margin-top:auto; border-top:1px solid #eee; padding-top:15px;">
+                                <span class="stock-badge ${isHabis ? 'empty' : ''}">
+                                    ${isHabis ? 'Habis' : 'Stok: ' + book.stock}
+                                </span>
+                                <button class="edit-icon-btn" onclick="editStock(${book.id}, ${book.stock})" title="Atur Stok"><i class="ri-add-circle-line"></i></button>
+                            </div>
+
+                            <button class="btn btn-danger" style="margin-top: 15px;" onclick="deleteBook(${book.id})">Hapus Buku</button>
+                        `;
+                    }
                     container.appendChild(card);
                 });
-            } catch (e) { console.error("Gagal load buku"); }
+            } catch (e) { console.error("Error load books"); }
         }
 
-        // --- READ HISTORY LOGS (Admin Only) ---
-        async function fetchLogs() {
-            if(currentRole !== 'admin') return;
-            const res = await fetch(`${API}/logs`, { headers: { 'x-user-role': 'admin' } });
-            const logs = await res.json();
-            const tbody = document.getElementById('historyBody');
-            tbody.innerHTML = '';
-
-            if(logs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada data peminjaman.</td></tr>';
-                return;
-            }
-
-            logs.forEach(log => {
-                const date = new Date(log.borrowDate).toLocaleString();
-                const mapsUrl = `https://www.google.com/maps?q=${log.latitude},${log.longitude}`;
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td>User-${log.userId}</td>
-                        <td>Buku ID-${log.bookId}</td>
-                        <td>${date}</td>
-                        <td><a href="${mapsUrl}" target="_blank" class="link-map"><i class="ri-map-pin-fill"></i> Cek Lokasi</a></td>
-                    </tr>
-                `;
-            });
-        }
-
-        // --- ACTIONS: CREATE, EDIT, DELETE, BORROW ---
+        // --- 3. FUNGSI EDIT TERPISAH (Helper + 3 Fungsi Utama) ---
         
-        async function createBook() {
-            const title = document.getElementById('title').value;
-            const author = document.getElementById('author').value;
-            const stock = document.getElementById('stock').value;
+        // Helper: Fungsi untuk melakukan update ke server (biar ga nulis ulang terus)
+        async function updateBookField(id, fieldName, newValue) {
+             try {
+                // 1. Ambil data lengkap saat ini dulu
+                const resGet = await fetch(`${API}/books/${id}`);
+                const currentData = await resGet.json();
 
-            if(!title || !author) return showToast('Isi semua data!');
+                // 2. Update field yang diminta
+                currentData[fieldName] = newValue;
 
-            await fetch(`${API}/books`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'x-user-role': 'admin' },
-                body: JSON.stringify({ title, author, stock })
-            });
-            showToast('Buku berhasil ditambahkan');
-            document.getElementById('title').value = '';
-            fetchBooks();
-        }
-
-        async function deleteBook(id) {
-            if(confirm('Hapus buku ini secara permanen?')) {
-                await fetch(`${API}/books/${id}`, { method: 'DELETE', headers: { 'x-user-role': 'admin' } });
-                fetchBooks();
-                showToast('Buku dihapus');
-            }
-        }
-
-        async function editBook(id) {
-            const newTitle = prompt("Masukkan Judul Baru:");
-            if(newTitle) {
+                // 3. Kirim balik data lengkap yang sudah diupdate
                 await fetch(`${API}/books/${id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', 'x-user-role': 'admin' },
-                    body: JSON.stringify({ title: newTitle, author: 'Updated', stock: 10 })
+                    headers: {'Content-Type':'application/json','x-user-role':'admin'},
+                    body: JSON.stringify({
+                        title: currentData.title,
+                        author: currentData.author,
+                        stock: currentData.stock
+                    })
                 });
-                fetchBooks();
+                fetchBooks(); // Refresh tampilan
+                showToast(`${fieldName} berhasil diperbarui!`);
+            } catch(e) { console.error(e); showToast('Gagal update data'); }
+        }
+
+        // Fungsi 1: Edit Judul Only
+        async function editTitle(id, oldVal) {
+            const newVal = prompt("Masukkan Judul Baru:", oldVal);
+            if(newVal && newVal !== oldVal) await updateBookField(id, 'title', newVal);
+        }
+
+        // Fungsi 2: Edit Penulis Only
+        async function editAuthor(id, oldVal) {
+            const newVal = prompt("Masukkan Penulis Baru:", oldVal);
+            if(newVal && newVal !== oldVal) await updateBookField(id, 'author', newVal);
+        }
+
+        // Fungsi 3: Edit Stok Only
+        async function editStock(id, oldVal) {
+            const newVal = prompt("Masukkan Jumlah Stok Baru (Angka):", oldVal);
+            // Validasi input harus angka
+            if(newVal && newVal !== oldVal && !isNaN(newVal)) {
+                await updateBookField(id, 'stock', parseInt(newVal));
+            } else if (isNaN(newVal)) {
+                showToast("Input stok harus angka!");
             }
         }
 
+        // --- LAIN-LAIN (Create, Delete, Borrow, History, Nav) ---
+        // (Bagian ini sama seperti sebelumnya, tidak ada perubahan logika major)
+        async function createBook() {
+            const title = document.getElementById('title').value; const author = document.getElementById('author').value; const stock = document.getElementById('stock').value;
+            if(!title) return showToast('Judul wajib diisi');
+            await fetch(`${API}/books`, {method:'POST', headers:{'Content-Type':'application/json','x-user-role':'admin'}, body: JSON.stringify({title, author, stock})});
+            document.getElementById('title').value=''; fetchBooks(); showToast('Buku ditambah');
+        }
+        async function deleteBook(id) {
+            if(confirm('Hapus buku ini permanen?')) { await fetch(`${API}/books/${id}`, {method:'DELETE', headers:{'x-user-role':'admin'}}); fetchBooks(); showToast('Buku dihapus'); }
+        }
+        async function fetchLogs() {
+            if(currentRole!=='admin')return; const res=await fetch(`${API}/logs`,{headers:{'x-user-role':'admin'}}); const logs=await res.json();
+            const tb=document.getElementById('historyBody'); tb.innerHTML=''; logs.forEach(l=>{
+                tb.innerHTML+=`<tr><td>U-${l.userId}</td><td>B-${l.bookId}</td><td>${new Date(l.borrowDate).toLocaleDateString()}</td><td><a href="http://maps.google.com/?q=${l.latitude},${l.longitude}" target="_blank" style="color:var(--primary)">Cek Peta</a></td></tr>`
+            });
+        }
         function borrowBook(id) {
-            if(!navigator.geolocation) return showToast('Browser tidak support GPS');
-            showToast('Sedang mendeteksi lokasi anda...');
-
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const res = await fetch(`${API}/borrow`, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json', 
-                        'x-user-role': 'user', 
-                        'x-user-id': '101' // ID User Simulasi
-                    },
-                    body: JSON.stringify({ 
-                        bookId: id, 
-                        latitude: pos.coords.latitude, 
-                        longitude: pos.coords.longitude 
-                    })
-                });
-
-                if(res.ok) {
-                    showToast('Sukses! Buku berhasil dipinjam.');
-                    fetchBooks();
-                } else {
-                    showToast('Gagal: Stok habis atau error server.');
-                }
-            }, () => showToast('Gagal ambil lokasi. Izinkan akses GPS!'));
+            if(!navigator.geolocation) return showToast('GPS Error'); showToast('Mendeteksi lokasi...');
+            navigator.geolocation.getCurrentPosition(async(p)=>{
+                const res=await fetch(`${API}/borrow`,{method:'POST',headers:{'Content-Type':'application/json','x-user-role':'user','x-user-id':'101'},body:JSON.stringify({bookId:id,lat:p.coords.latitude,long:p.coords.longitude})});
+                if(res.ok){showToast('Sukses pinjam!');fetchBooks();}
+            });
         }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.innerText = msg; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
+        function showSection(id) {
+            document.getElementById('section-catalog').style.display=(id==='catalog')?'grid':'none'; document.getElementById('section-history').className=(id==='history')?'table-container active':'table-container';
+            document.querySelectorAll('.menu-link').forEach(l=>l.classList.remove('active')); (id==='catalog')?document.getElementById('link-catalog').classList.add('active'):document.getElementById('link-history').classList.add('active'); if(id==='history')fetchLogs();
         }
-
-        // Init Load
-        fetchBooks();
+        function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+        
+        document.getElementById('roleSelect').value='user'; switchRole();
     </script>
-    
 </body>
 </html>
