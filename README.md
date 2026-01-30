@@ -208,6 +208,9 @@ Bukti Testing Postman ( GET Books):
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/18f03821-eeb4-4ff8-afa1-31a5f639d55b" />
 Bukti Testing Postman (DELETE Books):
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b7e1182e-4348-40ac-a878-b92fb2e1cfe5" />
+Bukti Testing Postman (BORROW Books): X role user
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b5f58365-218c-42e2-b145-11102ecb5ecd" />
+
 
 
 
